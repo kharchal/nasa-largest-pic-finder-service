@@ -4,8 +4,11 @@ import com.example.nasalargestpicfinderservice.service.LargestPicFinderService;
 import com.example.nasalargestpicfinderservice.service.dto.Photos;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,6 +33,7 @@ public class PicFinderController {
     private RestTemplate restTemplate;
 
     @GetMapping("/pictures/{sol}/largest")
+    @Cacheable("pics")
     public ResponseEntity findLargestPicAndRedirect(@PathVariable(required = true) Integer sol) {
         ResponseEntity<Photos> responseEntity = restTemplate.getForEntity(createUri(BASE_URL, params(sol)), Photos.class);
         log.info("response status code is {}", responseEntity.getStatusCode());
@@ -51,5 +55,11 @@ public class PicFinderController {
         map.put("api_key", API_KEY);
         map.put("sol", sol);
         return map;
+    }
+
+    @CacheEvict(value = "pics", allEntries = true)
+    @Scheduled(cron = "0 0 2 * * *")
+    public void picsCacheClearing() {
+
     }
 }
