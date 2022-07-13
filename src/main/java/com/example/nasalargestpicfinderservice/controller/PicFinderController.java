@@ -56,10 +56,4 @@ public class PicFinderController {
         map.put("sol", sol);
         return map;
     }
-
-    @CacheEvict(value = "pics", allEntries = true)
-    @Scheduled(cron = "0 0 2 * * *")
-    public void picsCacheClearing() {
-
-    }
 }

@@ -7,7 +7,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableCaching
-@EnableScheduling
 public class NasaLargestPicFinderServiceApplication {
 
     public static void main(String[] args) {
